@@ -1,0 +1,80 @@
+From the business rules, system architecture and database perspectives, I had to make a few decisions that impact the performance, reliability and usability of this application. The choices I made and the rationale behind my decisions are presented in this document.
+
+Business Rules
+I devised some rules that I believe would help in maintaining the integrity of the application and the data it protects. 
+
+	1.	The combination of the “name” and “location” attributes would serve as a unique identify for each contractor. This conforms with established business laws involving business name registration. 
+	2.	Once a record is created, the “name” and “location” attributes cannot be modified. This suggests that any mistake made in these two attributes during record creation can only be rectified by deleting the record and reentering it.
+	3.	A record that is currently booked cannot be deleted. 
+	4.	A record that is currently booked cannot be updated. 
+	5.	The only attribute that could be left blank or without a valid value at any time during the life of a record is the “owner” attribute. 
+
+GUI Design
+The main theme employed in the design of the client GUI is ease of use. I accomplished this by placing the following restrictions on the usage of the client GUI, these restrictions also translated to ease of implementation of the support for each operation. Those restrictions are listed below. 
+	1.	There is a button and a menu item for each operation supported by the client GUI.
+	2.	The client GUI only supports one operation at a time, this is enforced by using modal dialogs. 
+	3.	Transactions cannot be combined, for instance you cannot change the “rate” attribute while trying to book a record. This is enforced by only enabling the editing of fields that are relevant to the current operation only. For example, all the fields except the owner attribute field are disabled during “booking” and “release” operations. 
+	4.	Validation of entries in the client dialog is strictly enforced to ensure the integrity of the database. 
+	5.	For the sake of uniformity, I decided to us check boxes in the client dialog for editing specialities attributes. The list of specialities values supported by the system is also configurable during the client start up. 
+
+System Architecture and Design 
+The application was designed and implemented using the Model-View-Controller pattern. Because of the requirement to support both network and non-network running of the application, there is an abstraction for both the network and non-network version of the model, the view and the controller. 
+
+The creation of the client, controller and server components are done using the factory pattern. Each of the factories is parameterized, the parameter is a mapping to the application run mode as specified in the command line argument. 
+
+RMI Versus Sockets
+When making the decision as to which approach would be most viable, I considered the following factors in the context of both approaches.
+
+Concurrency
+When the application is run in network mode the server must be able to respond to concurrent requests from multiple clients, this implies that the server must be multithreaded. The sockets approach will require the implementation of a thread dispatch framework while RMI does not require this - it uses a thread pool for processing client requests. The only issue here then is the thread-safety of the server. Considering that the server is essentially a database server and also the synchronization mechanism implemented in the data class, the thread-safety of the server is a non-issue. The only state that the server has is the cache for database update listeners and access to this cache is through synchronized methods. 
+
+Communication Protocol
+In order for meaningful communication to take place between two remote processes on a network, there must be an established protocol. A sockets based server would require the design and implementation of such a protocol while this is not required if RMI is employed. The network communication and the protocol is implemented as part of the RMI framework. 
+
+Serialization and Deserialization
+The sockets approach would definitely require working with implementation details required for objects serialization. This is not necessary with an RMI server implementation, the RMI framework shields you from this. 
+
+Performance and Scalability
+There is no doubt that a sockets server could probably outperform an RMI server. The sockets approach provides easily implementable options for minimizing communications overhead through data compression for instance. Minimal network traffic is advantageous in highly available servers that have to consistently respond to multiple requests from multiple clients. RMI has more communications overhead that may affect the performance of the server and also network traffic latency. 
+
+Implementation Complexity 
+Once the nuances of creating both an RMI server and client are understood, what is left is equivalent to a non-network application. From the API perspective, there is not that much difference between making a call on a remote object and a non-remote one. The socket approach would require the implementation of a concurrency framework, a communication protocol, and object serialization/deserialization or marshaling/unmarshaling. 
+
+The only argument that could be made in favor of using the sockets approach is performance and scalability, but those are not particularly important in the implementation of this application. As a matter of fact, using the sockets approach is equivalent to trying to reinvent the wheel. In addition to the aforementioned RMI also provides a lot other benefits including ease of configuration and the fact that it is an established and proven technology.
+
+Database Issues
+The Data class is implemented as a singleton. 
+
+Record Locking
+The database employs both a global locking mechanism and a per/record locking mechanism. 
+
+Operations on the database can be classified into two, read operations and write operations. The goal of the global locking mechanism is to allow multiple concurrent read operations and only a single write operation at a time, both read and write operations are mutually exclusive. The global locking mechanism employs a ReentrantReadWriteLock. All the “read”, “find”, “isLocked” operations require the ReadLock component of the global lock and the “update”, “delete”, “create”, “lock” and “unlock” operations require the WriteLock. 
+
+Two major points were considered in the design of the logical record locking mechanism - identification of the owner of the lock on a record and the prevention of indefinite record locking. The need for a mechanism to identify the owner of a lock on a record is intuitive - the database client must own the lock on a record in order to modify or delete it. Indefinite record locking could occur when a remote database client requests a lock on a record and then crashes before unlocking the record or simply refuses to unlock the record; this will make granting subsequent lock requests on such record  impossible for the database.
+
+Both of these issues were easily resolved by making the client thin, the client is made completely oblivious to the protocol required for executing database transactions. The protocol was implemented in the server. For example if the client wants to update a record, it simply uses the API updateRecord() in the controller, the controller then uses the same named API in the server. The server is responsible for the lock, update, and unlock operations  on the record. All three operations require a call to the appropriate methods in the Data class and they are done in one thread. This almost guarantees that using the attributes of the Thread object returned from the call to Thread.currentThread() provides a reliable way to identify the lock owners. This also completely eliminates the concern about the disappearing client.
+
+To keep track of locked records a lock cache is kept in the Data class, the cache is a mapping of record number to a DatabaseLock object. The DatabaseLock class is a subclass of ReentrantLock, it uses an AtomicInteger to keep track of the number of threads that had made a lock request on it. The lock for a record is created and added to the lock cache when a thread wants to lock the record and there is no outstanding lock request on the record. The lock is removed from the cache when a thread unlocks a record and there are no other outstanding lock requests, this indicates that locks are not cached indefinitely. 
+
+Lost Updates
+While record locking ensures that there will not be concurrent modifications to records, it does not prevent “lost” updates. A possible scenario is where two clients get identical copies of the  same record. The first client makes updates based on its copy of the record and commits this change to the database. The second client then tries to update the record based on the original copy read, since it is not aware of the changes made by the first client.  If the second client is allowed to do the update we will lose the update done by the first client, this becomes a problem if the changes made by the first client may impact the second clients decision to update the record. I put in these mechanisms to guard against this.
+
+The first mechanism involves the termination of record update or delete requests when the record is currently locked due to another client’s request. The idea of locking a record is not something that is done in isolation, it is usually accompanied by a transaction that modifies or delete a record in the database. The premise of this mechanism is that if a record is locked, an update or deletion of that record is in progress, this means that the context under which this client’s request was made has changed. In my database server implementation, all update and delete transactions are done between record lock and unlock requests. Before these transactions, a check is made to see if the record that is being updated or deleted is currently locked and if that is the case the current transaction enquiring about the lock is terminated. 
+
+The second mechanism involves reconciling the state of the record when the request was made with the current state of the record. If the record has changed, the transaction is terminated. Thus each update/delete transaction is done in four steps. 
+	1.	Lock the record
+	2.	Read the record from the database and compare it with the pre-transaction state, if there had been changes unlock the record and terminate the transaction.
+	3.	Execute the transaction
+	4.	Unlock the record
+
+The third mechanism ensures that all the records displayed in the GUI of every client connected to the same server reflect the most up to date attributes of those records, this is also the case when the application is run in “stand alone” mode. All requests to the server that involves modification of record(s) in the database results in the notification of all the clients to refresh their display. Every client and controller object registers for these updates from the server during startup time. 
+
+Record Caching
+I started the project by working on the Data class and one of the first things that crossed my mind was the feasibility of caching the database records from the perspective of memory use. It is quite possible to implement the database component without caching at all, this can be accomplished by using a RandomAccessFile. The cost of doing this is the loss of the performance gains that caching  provides. I chose to do caching and to mitigate the effect of possible memory depletion, I used soft references for the records. This means that the Data class will cache all the records until memory depletion induces garbage collection, at this point all garbage collected records are read from the database file and recached. Best of both worlds?
+	    
+Transaction Loss
+Although the Data class employs a caching scheme for records, all updates to records in the database are reflected in both the cache and the database file. All “create”, “update” and “delete” transactions are written to the database file immediately. This guards against transaction(s) loss that may result from a server crash. Access to the physical database file is through a RandomAccessFile.
+
+Persistence of Record Identity
+In every run of the application, as long as a record is not deleted the record would have the same record number. This facilitates the use of the record number as the hash code for database 
+record objects in the application. 

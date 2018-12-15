@@ -1,0 +1,91 @@
+Sep 13, 2015 3:15:03 PM suncertify.client.BrokerClient getClientConfigParams
+INFO: Started the ClientDialogThread, waiting for notification
+Sep 13, 2015 3:15:39 PM suncertify.common.AppConfigManager set
+INFO: Property SERVER_TYPE was changed from alone to alone
+Sep 13, 2015 3:15:39 PM suncertify.client.BrokerClient getClientConfigParams
+INFO: Started the ClientDialogThread, waiting for notification
+Sep 13, 2015 3:15:42 PM suncertify.client.gui.ClientConfigDialog$ClientConfigAction actionPerformed
+INFO: The user has entered the configuration the client startup can proceed
+Sep 13, 2015 3:15:42 PM suncertify.client.BrokerClient getClientConfigParams
+INFO: Received notification from ClientDialogThread!!
+Sep 13, 2015 3:15:42 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was added to the listeners list. 
+Sep 13, 2015 3:15:42 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was added to the listeners list. 
+Sep 13, 2015 3:15:42 PM suncertify.db.Data <init>
+INFO: Finished caching database metadata
+Sep 13, 2015 3:15:42 PM suncertify.db.Data <init>
+INFO: Read and cached a total of 28 records
+Sep 13, 2015 3:16:27 PM suncertify.db.Data close
+INFO: Data.close() Closing the application database file!!
+Jan 29, 2016 12:18:18 AM suncertify.client.BrokerClient getClientConfigParams
+INFO: Started the ClientDialogThread, waiting for notification
+Jan 29, 2016 12:18:33 AM suncertify.client.gui.ClientConfigDialog$ClientConfigAction actionPerformed
+INFO: The user has entered the configuration the client startup can proceed
+Jan 29, 2016 12:18:33 AM suncertify.client.BrokerClient getClientConfigParams
+INFO: Received notification from ClientDialogThread!!
+Jan 29, 2016 12:18:33 AM suncertify.client.BrokerRemoteClient startClient
+SEVERE: Caught an exception during remote client startup - Connection refused to host: Augustines-MBP; nested exception is: 
+	java.net.ConnectException: Connection refused
+Jan 29, 2016 12:18:49 AM suncertify.common.AppConfigManager set
+INFO: Property SERVER_TYPE was changed from server to server
+Jan 29, 2016 12:18:55 AM suncertify.db.Data <init>
+INFO: Finished caching database metadata
+Jan 29, 2016 12:18:55 AM suncertify.db.Data <init>
+INFO: Read and cached a total of 28 records
+Jan 29, 2016 12:19:06 AM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was added to the listeners list. 
+Jan 29, 2016 12:19:06 AM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was added to the listeners list. 
+Jan 29, 2016 12:19:33 AM suncertify.server.BrokerServer updateRecord
+INFO: The record - Moore Power Tool Ya | Xanadu | Plumbing | 5 | $60.00 |  was updated
+Jan 29, 2016 1:05:32 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was removed from the listeners list. 
+Jan 29, 2016 1:05:32 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was removed from the listeners list. 
+Jan 29, 2016 1:05:32 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was removed from the listeners list. 
+Jan 29, 2016 1:05:40 AM suncertify.db.Data close
+INFO: Data.close() Closing the application database file!!
+Dec 05, 2016 11:22:44 PM suncertify.common.AppConfigManager set
+INFO: Property SERVER_TYPE was changed from server to server
+Dec 05, 2016 11:23:09 PM suncertify.db.Data <init>
+INFO: Finished caching database metadata
+Dec 05, 2016 11:23:09 PM suncertify.db.Data <init>
+INFO: Read and cached a total of 28 records
+Dec 05, 2016 11:40:27 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was added to the listeners list. 
+Dec 05, 2016 11:40:27 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was added to the listeners list. 
+Dec 06, 2016 12:10:15 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was removed from the listeners list. 
+Dec 06, 2016 12:10:15 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was removed from the listeners list. 
+Dec 06, 2016 12:10:15 AM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was removed from the listeners list. 
+Dec 06, 2016 12:10:25 AM suncertify.db.Data close
+INFO: Data.close() Closing the application database file!!
+Jun 22, 2017 9:23:25 PM suncertify.common.AppConfigManager set
+INFO: Property SERVER_TYPE was changed from server to server
+Jun 22, 2017 9:23:41 PM suncertify.db.Data <init>
+INFO: Finished caching database metadata
+Jun 22, 2017 9:23:41 PM suncertify.db.Data <init>
+INFO: Read and cached a total of 28 records
+Jun 22, 2017 9:24:16 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was added to the listeners list. 
+Jun 22, 2017 9:24:16 PM suncertify.server.BrokerServer registerUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was added to the listeners list. 
+Jun 22, 2017 9:24:35 PM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 0 was removed from the listeners list. 
+Jun 22, 2017 9:24:35 PM suncertify.server.BrokerServer unregisterUpdateListener
+INFO: DBUpdateListener with listener ID - 1 was removed from the listeners list. 
+Jun 22, 2017 10:03:26 PM suncertify.db.Data close
+INFO: Data.close() Closing the application database file!!
+Nov 30, 2017 5:06:32 PM suncertify.common.AppConfigManager set
+INFO: Property SERVER_TYPE was changed from server to server
+Nov 30, 2017 5:06:50 PM suncertify.db.Data <init>
+INFO: Finished caching database metadata
+Nov 30, 2017 5:06:50 PM suncertify.db.Data <init>
+INFO: Read and cached a total of 28 records
+Nov 30, 2017 10:12:28 PM suncertify.db.Data close
+INFO: Data.close() Closing the application database file!!

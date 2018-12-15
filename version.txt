@@ -1,0 +1,2 @@
+Host Platform: MacBook Pro running OSX 10.10.4
+JDK version: 1.8.0_45
